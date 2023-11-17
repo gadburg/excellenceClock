@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>ExcellenceClock</title>
+        <title>Sobre nosotros</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,7 +17,7 @@
     </head>
     <body>
         <div id="app">
-            <Home />
+            <About />
         </div> 
 
         @vite('resources/js/app.js')

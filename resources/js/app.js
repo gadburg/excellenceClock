@@ -6,6 +6,7 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
+import 'bootstrap/dist/css/bootstrap.css';
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -17,6 +18,18 @@ const app = createApp({});
 
 import ExampleComponent from './components/ExampleComponent.vue';
 app.component('example-component', ExampleComponent);
+
+import HomeComponent from './components/Home.vue';
+app.component('home', HomeComponent);
+
+import HeaderComponent from './components/Header.vue';
+app.component('header-component', HeaderComponent);
+
+import FooterComponent from './components/Footer.vue';
+app.component('footer-component', FooterComponent);
+
+import AboutComponent from './components/About.vue';
+app.component('About-component', AboutComponent);
 
 /**
  * The following block of code may be used to automatically register your
