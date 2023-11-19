@@ -18,10 +18,10 @@
                                 <a class="nav-link" href="#">Inicio</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Iniciar Sesión</a>
+                                <a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Acerca de</a>
+                                <a class="nav-link" href="/about">Acerca de</a>
                             </li>
                         </ul>
                     </div>

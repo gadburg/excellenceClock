@@ -9,7 +9,7 @@ class Empresa extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_empresa';
+    protected $primaryKey = 'id_empresas';
     protected $fillable = ['nombre', 'responsable'];
 
     public function responsable()
