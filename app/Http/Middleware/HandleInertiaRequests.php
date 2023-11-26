@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
             'user.roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
             'user.permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
             'user.empresa' => $request->user() ? $request->user()->empresa->nombre : null,
+            'user.id' => $request->user() ? $request->user()->id : null,
         ]);
     }
 }

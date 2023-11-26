@@ -24,7 +24,6 @@ class UserSeeder extends Seeder
         //crear usuario admin
         $admin = User::create([
             'name' => 'admin',
-            'shurname' => 'admin',
             'email' => 'admin@excellenceclock.net',
             'password' => Hash::make('admin'),
             'id_empresa' => 1

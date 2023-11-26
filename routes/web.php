@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\RegistroController;
+use App\Http\Controllers\EmpresaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +34,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    //rutas
+    //Route::post('/reloj', [RegistroController::class, 'store'])->name('dashboard');
+    //Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
+    //Route::get('/empresas/create', [EmpresaController::class, 'create'])->name('empresas.create');
+    //Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
+    Route::resource('/empresas', EmpresaController::class);
 });

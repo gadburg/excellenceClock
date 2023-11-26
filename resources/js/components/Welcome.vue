@@ -1,18 +1,23 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Registro from '@/Components/Registro.vue';
+
 </script>
 
 <template>
     <div>
-        <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-            <ApplicationLogo class="block h-12 w-auto" />
+        <div class="p-6 lg:p-8 bg-white border-b border-gray-200 flex items-center justify-center flex-wrap flex-col">
+            
+            <ApplicationLogo class="block h-12 w-auto mr-4" />
 
-            <h1 class="mt-8 text-2xl font-medium text-gray-900">
-                {{ $page.props }}
+            <h1 class="text-2xl font-medium text-gray-900">
+                {{ $page.props.auth.user.name }}
             </h1>
-
-            <p class="mt-6 text-gray-500 leading-relaxed">
-                Laravel Jetstream provides a beautiful, robust starting point for your next Laravel application. Laravel is designed
+        
+            <!--<Reloj :userId="$page.props.auth.user.id" :additionalClasses="'mt-6 text-gray-500 leading-relaxed w-full lg:w-auto'" />-->
+            <Registro :userId="$page.props.auth.user.id" :additionalClasses="'mt-6 text-gray-500 leading-relaxed w-full lg:w-auto'" />
+            <p class="mt-6 text-gray-500 leading-relaxed w-full lg:w-auto">
+                testLaravel Jetstream provides a beautiful, robust starting point for your next Laravel application. Laravel is designed
                 to help you build your application using a development environment that is simple, powerful, and enjoyable. We believe
                 you should love expressing your creativity through programming, so we have spent time carefully crafting the Laravel
                 ecosystem to be a breath of fresh air. We hope you love it.

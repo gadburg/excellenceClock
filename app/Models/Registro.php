@@ -9,8 +9,9 @@ class Registro extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_registro';
-    protected $fillable = ['id_usuario', 'fecha', 'hora_salida', 'hora_entrada', 'longitud', 'latitud', 'ip'];
+    protected $fillable = [
+        'id_usuario', 'fecha', 'hora_entrada', 'hora_salida', 'longitud', 'latitud', 'ip'
+    ];
 
     public function usuario()
     {

@@ -24,6 +24,11 @@ class RoleSeeder extends Seeder
         $permission_update_role = Permission::create(['name' => 'update roles']);
         $permission_delete_role = Permission::create(['name' => 'delete roles']);
 
+        $permission_create_user = Permission::create(['name' => 'create user']);
+        $permission_read_user = Permission::create(['name' => 'read user']);
+        $permission_update_user = Permission::create(['name' => 'update user']);
+        $permission_delete_user = Permission::create(['name' => 'delete user']);
+
         $permission_create_turno = Permission::create(['name' => 'create turno']);
         $permission_read_turno = Permission::create(['name' => 'read turno']);
         $permission_update_turno = Permission::create(['name' => 'update turno']);
@@ -61,6 +66,11 @@ class RoleSeeder extends Seeder
                 $permission_read_role,
                 $permission_update_role,
                 $permission_delete_role,
+
+                $permission_create_user,
+                $permission_read_user,
+                $permission_update_user,
+                $permission_delete_user,
                 
                 $permission_create_turno,
                 $permission_read_turno,
