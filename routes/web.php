@@ -36,9 +36,6 @@ Route::middleware([
     })->name('dashboard');
 
     //rutas
-    //Route::post('/reloj', [RegistroController::class, 'store'])->name('dashboard');
-    //Route::get('/empresas', [EmpresaController::class, 'index'])->name('empresas.index');
-    //Route::get('/empresas/create', [EmpresaController::class, 'create'])->name('empresas.create');
-    //Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
     Route::resource('/empresas', EmpresaController::class);
+    Route::resource('/registros', RegistroController::class);
 });

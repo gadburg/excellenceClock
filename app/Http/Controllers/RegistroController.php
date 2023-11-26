@@ -5,45 +5,59 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Registro;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class RegistroController extends Controller
 {
 
+    public function index(Request $request)
+    {  
+        //Obtenemos el id del usuario
+        $userId = $request->user()->id;
 
-    // Método para mostrar la lista de registros
-    public function index()
-    {
-        // Obtén los registros desde la base de datos
-        $registros = Registro::all();
+        //filtramos los registros por el usuario
+        $registros = Registro::where('id_usuario', $userId)->get();
 
-        // Devuelve los registros a la vista de Inertia
-        return inertia('Registros/Index', [
+        return inertia('Registro/Index', [
             'registros' => $registros,
         ]);
     }
 
-    /* Método para mostrar el formulario de creación
     public function create()
     {
-        // Muestra el formulario de creación
+        //mostramos la creacion
         return inertia('Registros/Create');
-    }*/
+    }
 
     public function store(Request $request)
     {
-        $data = [
-            'id_usuario' => $request->input('id_usuario'),
-            'fecha' => $request->input('fecha'),
-            'hora_entrada' => $request->input('hora_entrada'),
-            'hora_salida' => $request->input('hora_salida'),
-            'longitud' => $request->input('longitud'),
-            'latitud' => $request->input('latitud'),
-            'ip' => $request->ip(),
-        ];
+        
+        $userId = $request->user()->id;
 
-        Registro::create($data);
-
-        return redirect()->back();
+        $request->validate([
+            
+            'fecha' => 'required',
+            'hora_entrada' => 'required',
+            'hora_salida' => 'required',
+            'longitud' => 'required',
+            'latitud' => 'required',
+            'ip' => 'required',
+        ]);
+        try{
+            Registro::create([
+                'id_usuario' => $request->user()->id,
+                'fecha' => $request->fecha,
+                'hora_entrada' => $request->hora_entrada,
+                'hora_salida' => $request->hora_salida,
+                'longitud' => $request->longitud,
+                'latitud' => $request->latitud,
+                'ip' => $request->ip,
+            ]);
+        
+            return redirect()->route('registros.index');
+        }catch(\Exception $e){
+            Log::error('Error al almacenar el registro: ' . $e->getMessage());
+        }
     }
 
     // Método para procesar la creación de un nuevo registro

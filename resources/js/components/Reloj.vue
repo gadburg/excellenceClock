@@ -448,7 +448,7 @@ const updateTime = () => {
   }
 };
 
-/*const sendDataToBackend = async (data) => {
+const sendDataToBackend = async (data) => {
   try {
     // Utiliza el método post de Inertia para enviar datos al controlador
     await post('/dashboard', data);
@@ -457,28 +457,8 @@ const updateTime = () => {
   } catch (error) {
     console.error('Error al enviar datos:', error.message);
   }
-};*/
-const sendDataToBackend = async (data) => {
-  try {
-    const token = document.head.querySelector('meta[name="csrf-token"]').content;
-    
-    const response = await fetch('/reloj', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': token,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al enviar datos al backend');
-    }
-
-  } catch (error) {
-    console.error('Error al enviar datos al backend:', error.message);
-  }
 };
+
 </script>
 <!--
 <script setup>

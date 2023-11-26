@@ -53,7 +53,7 @@ const isActive = (...routes) => routes.includes(route().current());
                             </div>
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                <NavLink :href="route('registros.index')" :active="route().current('registros.*')">
                                     Registro Horario
                                 </NavLink>
                             </div>
@@ -66,8 +66,8 @@ const isActive = (...routes) => routes.includes(route().current());
                             </div>
                             <div v-if="$page.props.user.permissions.includes('create user')"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('crearEsuario')">
-                                    Crear Usuario
+                                <NavLink :href="route('register')" :active="route().current('register')">
+                                    Usuarios
                                 </NavLink>
                             </div>
                         </div>
@@ -218,7 +218,7 @@ const isActive = (...routes) => routes.includes(route().current());
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
                     class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                        <ResponsiveNavLink :href="route('registros.index')" :active="route().current('registros.*')">
                             Registro Horario
                         </ResponsiveNavLink>
                     </div>
@@ -231,8 +231,8 @@ const isActive = (...routes) => routes.includes(route().current());
                     </div>
 
                     <div v-if="$page.props.user.permissions.includes('create user')" class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('crearUsuario')">
-                            Crear Usuario
+                        <ResponsiveNavLink :href="route('register')" :active="route().current('crearUsuario')">
+                            Usuarios
                         </ResponsiveNavLink>
                     </div>
                     <!-- Responsive Settings Options -->

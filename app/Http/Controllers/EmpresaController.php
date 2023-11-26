@@ -49,4 +49,15 @@ class EmpresaController extends Controller
         $empresa->delete();
         return redirect()->route('empresas.index');
     }
+
+    public function getEmpresas()
+    {
+        $empresas  = Empresa::all(['id', 'nombre']);
+        return $empresas -> map (function ($empresa){
+            return [
+                'value' => $empresa->id,
+                'label' => $empresa->nombre,
+            ];
+        });
+    }
 }
