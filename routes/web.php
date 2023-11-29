@@ -38,4 +38,6 @@ Route::middleware([
     //rutas
     Route::resource('/empresas', EmpresaController::class);
     Route::resource('/registros', RegistroController::class);
+    Route::get('/mostrar-mes/{mes}/{anio}',[RegistroController::class, 'mostrarMes']);
+    Route::get('/horas-rango/{fechaInicio}/{fechaFin}',[RegistroController::class, 'horasRango']);
 });

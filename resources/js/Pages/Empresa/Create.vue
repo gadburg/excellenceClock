@@ -8,6 +8,7 @@ const form = useForm({
 });
 
 const submitForm = () => {
+
     form.post(route('empresas.store'), {
         onFinish: () => form.reset('nombre', 'responsable'),
     });
@@ -22,7 +23,7 @@ const submitForm = () => {
                 Crear Empresa
             </h2>
         </template>
-  <div class="max-w-2xl mx-auto mt-10">
+  <div class="max-w-2xl mx-auto mt-10 bg-white p-5 rounded-xl shadow-xl animate__animated animate__bounceInLeft animate__delay-1s">
     <h1 class="text-2xl font-semibold mb-6">Crear Empresa</h1>
     <form @submit.prevent="submitForm" class="space-y-4">
       <div class="flex flex-col">
@@ -35,7 +36,7 @@ const submitForm = () => {
         <input v-model="form.responsable" type="text" id="responsable" class="p-2 border rounded" required>
       </div>
 
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 animate__animated animate__bounceInRight animate__delay-1s">Guardar</button>
     </form>
   </div>
   </AppLayout>

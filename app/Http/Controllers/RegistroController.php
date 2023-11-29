@@ -15,8 +15,8 @@ class RegistroController extends Controller
         //Obtenemos el id del usuario
         $userId = $request->user()->id;
 
-        //filtramos los registros por el usuario
-        $registros = Registro::where('id_usuario', $userId)->get();
+        //filtramos los registros por el usuario y ordenamos los recientes primero
+        $registros = Registro::where('user_id', $userId)->orderBy('fecha', 'desc')->get();
 
         return inertia('Registro/Index', [
             'registros' => $registros,
@@ -26,158 +26,93 @@ class RegistroController extends Controller
     public function create()
     {
         //mostramos la creacion
-        return inertia('Registros/Create');
+        return inertia('Registro/Create');
     }
 
     public function store(Request $request)
     {
-        
         $userId = $request->user()->id;
 
         $request->validate([
-            
             'fecha' => 'required',
-            'hora_entrada' => 'required',
-            'hora_salida' => 'required',
-            'longitud' => 'required',
-            'latitud' => 'required',
+            'rango' => 'required',
+            'ubicacion' => 'required',
             'ip' => 'required',
+            'total' => 'required',
         ]);
-        try{
+
+        try {
+            // Busca un registro existente para el mismo usuario y fecha
+            $existingRecord = Registro::where('user_id', $userId)
+                ->where('fecha', $request->fecha)
+                ->first();
+
+            if ($existingRecord) {
+                // Si ya existe un registro para este usuario y fecha, no hacemos nada
+                return redirect()->route('registros.index');
+            }
+
+            // Si no existe, crea un nuevo registro
             Registro::create([
-                'id_usuario' => $request->user()->id,
+                'user_id' => $userId,
                 'fecha' => $request->fecha,
-                'hora_entrada' => $request->hora_entrada,
-                'hora_salida' => $request->hora_salida,
-                'longitud' => $request->longitud,
-                'latitud' => $request->latitud,
+                'rango' => $request->rango,
+                'ubicacion' => $request->ubicacion,
                 'ip' => $request->ip,
+                'total' => $request->total,
             ]);
-        
+
             return redirect()->route('registros.index');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error('Error al almacenar el registro: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al almacenar el registro'], 500);
         }
     }
 
-    // Método para procesar la creación de un nuevo registro
-    /*public function store(Request $request)
+    public function edit(Registro $registro)
     {
-        // Valida y crea un nuevo registro
+        return inertia('Registro/Edit', ['registro'=> $registro]);
+    }
+
+    public function update(Request $request, Registro $registro){
         $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id', // Asegúrate de ajustar esto según tu lógica
-            'fecha' => 'required|date',
-            'hora_entrada' => 'required|date_format:H:i:s',
-            'hora_salida' => 'required|date_format:H:i:s',
-            'longitud' => 'required|numeric',
-            'latitud' => 'required|numeric',
-            'ip' => 'required|ip',
+            'rango' => 'required',
+            'total' => 'required',
         ]);
-
-        Registro::create([
-            'id_usuario' => $request->input('id_usuario'),
-            'fecha' => $request->input('fecha'),
-            'hora_entrada' => $request->input('hora_entrada'),
-            'hora_salida' => $request->input('hora_salida'),
-            'longitud' => $request->input('longitud'),
-            'latitud' => $request->input('latitud'),
-            'ip' => $request->input('ip'),
+    
+        $registro->update([
+            'rango' => $request->rango,
+            'total' => $request->total,
         ]);
-
-        // Redirige de vuelta a la lista de registros después de la creación
-        return redirect(route('dashboard'));
-    }*/
-    /*public function index(){
-        return Inertia::render('Registros/Index', [
-            'registros' => Registro::all(),
-        ]);
-    }
-    public function create(){
-        return inertia('registros/Create');
+    
+        return redirect()->route('registros.index');
     }
 
-    public function store(Request $request){
+    public function mostrarMes(Request $request, $mes, $anio){
 
-        Request->validate([
-            //'id_usuario' => 'required|exists:users,id',
-            'fecha' => 'required|date',
-            'hora_entrada' => 'required',
-            'hora_salida' => 'required',
-            'longitud' => 'required|numeric',
-            'latitud' => 'required|numeric',
-            'ip' => 'required|ip',
-            
-        ]);
+        $userId = $request->user()->id;
 
-         // Crear un nuevo registro
-    $registro = new Registro([
-        'id_usuario' => auth()->id(), // Obtener el ID del usuario autenticado
-        'fecha' => $request->fecha,
-        'hora_entrada' => $request->hora_entrada,
-        'hora_salida' => $request->hora_salida,
-        'longitud' => $request->longitud,
-        'latitud' => $request->latitud,
-        'ip' => $request->ip,
-    ]);
+        $registros = Registro::where('user_id', $userId)
+            ->whereMonth('fecha', $mes)  
+            ->whereYear('fecha', $anio)           
+            ->orderBy('fecha', 'asc')
+            ->select('fecha', 'rango', 'ubicacion', 'ip','total')
+            ->get();
 
-    // Guardar el registro en la base de datos
-    $registro->save();
-
-    // Puedes devolver una respuesta, por ejemplo, un mensaje de éxito
-    return response()->json(['message' => 'Registro almacenado con éxito']);
-        //Registro::create($request->all());
-
-        //return response()->json(['message' => 'Registro horario almacenado correctamente']);
+        return response()->json($registros);
     }
 
-
-    public function insertarRegistro(Request $request)
-    {
-        // Aquí obtienes los datos del cuerpo de la solicitud
-        $data = $request->all();
-
-        // Luego, puedes usar Eloquent para insertar en la base de datos
-        Registro::create($data);
-
-        // Puedes devolver una respuesta si es necesario
-        return response()->json(['message' => 'Registro insertado con éxito']);
-    }
-    /*public function storeEntrada(Request $request)
-    {
-        $data = $request->validate([
-            'id_usuario' => 'required|exists:users,id',
-            'fecha' => 'required|date',
-            'hora_entrada' => 'required|date',
-            'longitud' => 'required|numeric',
-            'latitud' => 'required|numeric',
-            'ip' => 'required|ip',
-        ]);
-
-        $registro = Registro::create($data);
-
-        return response()->json(['message' => 'Entrada registrada con éxito', 'registro' => $registro], 201);
+    public function horasRango(Request $request, $fechaInicio, $fechaFin) {
+        $userId = $request->user()->id;
+    
+        // Obtener registros para el usuario y el rango de fechas
+        $registros = Registro::where('user_id', $userId)
+            ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+            ->orderBy('fecha', 'asc')
+            ->select('total')
+            ->get();
+    
+        return response()->json($registros);
     }
 
-    public function storeSalida(Request $request, Registro $registro)
-    {
-        $data = $request->validate([
-            'hora_salida' => 'required|date',
-        ]);
-
-        $registro->update($data);
-
-        return response()->json(['message' => 'Salida registrada con éxito'], 200);
-    }
-
-    public function show(Event $event)
-    {
-        return Inertia::render('Event/Show', [
-            'event' => $event->only(
-                'id',
-                'title',
-                'start_date',
-                'description'
-            ),
-        ]);
-    }*/
 }

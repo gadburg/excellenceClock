@@ -40,24 +40,38 @@ class EmpresaController extends Controller
     }
 
     public function update(Request $request, Empresa $empresa){
-        $empresa->update($request);
+        $request->validate([
+            'nombre' => 'required',
+            'responsable' => 'required',
+        ]);
+    
+        $empresa->update([
+            'nombre' => $request->nombre,
+            'responsable' => $request->responsable,
+        ]);
+    
         return redirect()->route('empresas.index');
     }
 
     public function destroy(Empresa $empresa)
     {
-        $empresa->delete();
-        return redirect()->route('empresas.index');
+        try{
+            $empresa->delete();
+            //return redirect()->route('empresas.index');
+        }catch (\Exception $e) {
+            Log::error('Error borrar el registro: ' . $e->getMessage());
+        }
     }
 
-    public function getEmpresas()
+    public function borrar(Request $request, Empresa $empresa)
     {
-        $empresas  = Empresa::all(['id', 'nombre']);
-        return $empresas -> map (function ($empresa){
-            return [
-                'value' => $empresa->id,
-                'label' => $empresa->nombre,
-            ];
-        });
+        try{
+            $empresa->delete();
+            return redirect()->route('empresas.index');
+        }catch (\Exception $e) {
+            Log::error('Error borrar el registro: ' . $e->getMessage());
+        }
     }
+
+   
 }

@@ -1,6 +1,17 @@
 <script>
 export default {
-    name: 'Registros'
+    name: 'Registros',
+    methods: {
+        inicio() {
+
+            this.$inertia.visit(route('registros.create'));
+
+        },
+        detener(id) {
+                     
+            this.$inertia.visit(route('registros.edit', id));
+        },
+    },
 }
 
 </script>
@@ -9,48 +20,83 @@ export default {
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
-import { defineProps, onMounted, ref } from 'vue';
-import Reloj from '@/Pages/Registro/Create.vue';
+import { defineProps, onMounted, ref, watch } from 'vue';
+
 
 //propiedades del componente
 const { registros } = defineProps(['registros']);
 
-//referencia reactiva para almacenar los datos con la ubicacion procesada
-const registrosConCiudad = ref([]);
+const tiempo = ref('00:00:00');
 
-//funcion para obtener la ciudad a partir de las coordenadas
-const obtenerCiudad = (latitud, longitud) => {
-    return fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitud}&lon=${longitud}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                return data.address.state;
-            } else {
-                return 'Ciudad Desconocida';
-            }
-        })
-        .catch(error => {
-            console.error('Error al obtener la ciudad:', error.message);
-            return 'Ciudad Desconocida';
-        });
+const registroUsado = ref(null);
+
+var intervalId;
+// Obtener el registro con la fecha de hoy
+const obtenerRegistroHoy = () => {
+    const fechaHoy = new Date().toISOString().split('T')[0];
+    const detener = document.getElementById('detener');
+    const iniciar = document.getElementById('iniciar');
+    // Buscar en los registros el que tenga la fecha de hoy
+    const registroHoy = registros.find(registro => registro.fecha === fechaHoy);
+    // Si se encuentra el registro, puedes acceder a su id con registroHoy.id
+    if (registroHoy) {
+        registroUsado.value = registroHoy.id_registro;
+        // Dividir el campo rango por "-" si existe
+        const partesRango = registroHoy.rango.split('-');
+        if (partesRango.length > 1) {
+            // Calcular la diferencia de tiempo entre los dos registros
+            const tiempoAnterior = partesRango[0];
+            const tiempoActual = partesRango[1];
+
+            const segundos1 = obtenerSegundosDesdeMedianoche(tiempoAnterior);
+            const segundos2 = obtenerSegundosDesdeMedianoche(tiempoActual);
+
+            const diferenciaEnSegundos = segundos2 - segundos1;
+
+            const horas = Math.floor(diferenciaEnSegundos / 3600);
+            const minutos = Math.floor((diferenciaEnSegundos % 3600) / 60);
+            const segundos = diferenciaEnSegundos % 60;
+
+            tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
+            
+        } else {
+            // No hay guion "-", comparar con la hora actual y mostrar la diferencia desde ese punto
+            const tiempoAnterior = partesRango[0];
+            const tiempoActual = new Date().toISOString().split('T')[1].split('.')[0];;
+            //const diferencia = tiempoActual - tiempoAnterior;
+
+            const segundos1 = obtenerSegundosDesdeMedianoche(tiempoAnterior);
+            const segundos2 = obtenerSegundosDesdeMedianoche(tiempoActual);
+
+            const diferenciaEnSegundos = segundos2 - segundos1;
+            const horas = Math.floor(diferenciaEnSegundos / 3600);
+            const minutos = Math.floor((diferenciaEnSegundos % 3600) / 60);
+            const segundos = diferenciaEnSegundos % 60;
+            
+            detener.disabled = false;
+
+            tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
+        }
+    }
+}
+
+function obtenerSegundosDesdeMedianoche(hora) {
+    const [hh, mm, ss] = hora.split(':');
+    return parseInt(hh, 10) * 3600 + parseInt(mm, 10) * 60 + parseInt(ss, 10);
+}
+
+const formatearNumero = (numero) => {
+    return numero < 10 ? `0${numero}` : numero;
 };
 
-//funcion asincrona para obtener las ciudades de cada registro
-const obtenerCiudadesParaRegistros = async () => {
-    const registrosConCiudadActualizados = await Promise.all(
-        registros.map(async (registro) => {
-            const ciudad = await obtenerCiudad(registro.latitud, registro.longitud);
-            return { ...registro, ciudad };
-        })
-    );
-    //actualizamos la referencia reactiva con la ciudad
-    registrosConCiudad.value = registrosConCiudadActualizados;
-};
-
-//al montar la pagina llamamos a la funcion para generar los datos de la ciudad
 onMounted(() => {
-    obtenerCiudadesParaRegistros();
+    obtenerRegistroHoy();
+
+    intervalId = setInterval(() => {
+        obtenerRegistroHoy();
+    }, 1000);
 });
+
 </script>
 
 <template>
@@ -60,31 +106,50 @@ onMounted(() => {
                 Registros
             </h2>
         </template>
-        <Reloj :registros="registros" />
+        <div class="flex flex-col items-center mt-10">
+            <!-- Botones a los lados -->
+            <div class="flex space-x-8">
+                <button id="iniciar"
+                    class="bg-green-500 hover:bg-green-400 text-white font-bold border-b-4 border-green-700 hover:border-green-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
+                    @click="inicio">
+                    Iniciar
+                </button>
+                <button id="detener"
+                    class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold border-b-4 border-yellow-700 hover:border-yellow-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
+                    @click="() => detener(registroUsado)" disabled>
+                    Detener
+                </button>
+            </div>
+
+            <!-- Contador de reloj en el centro y más arriba -->
+            <div class="mt-4 text-4xl font-bold bg-black rounded-xl text-white animate__animated animate__zoomIn animate__delay-1s p-1 shadow-lg" id="contadorReloj">
+                {{ tiempo }}
+            </div>
+        </div>
         <div class="grid place-items-center">
-            <div class="max-w-4xl mx-auto flex justify-between items-center mt-3 rounded-md bg-white">
+            <div class="max-w-4xl mx-auto flex justify-between items-center mt-3 rounded-xl bg-white shadow-lg ">
                 <p class="text-lg font-bold py-1 pl-5 pr-5">Registros</p>
             </div>
         </div>
-        <div class="max-w-2xl mx-auto mt-3 bg-white overflow-x-auto rounded-md shadow-md">
-            <table class="min-w-full">
-                <thead class="bg-gray-600 text-white">
-                    <tr>
-                        <th class="py-2">Fecha</th>
-                        <th class="py-2">Hora Entrada</th>
-                        <th class="py-2">Hora Salida</th>
-                        <th class="py-2">Ubicación</th>
-                        <th class="py-2 pr-1">IP</th>
+        <div class="max-w-2xl mx-auto mt-3 bg-white shadow-xl">
+            <table class="min-w-full  shadow-xl">
+                <thead class="bg-gray-600 text-white ">
+                    <tr class="rounded">
+                        <th>IP</th>
+                        <th>Fecha</th>
+                        <th>Horas</th>
+                        <th>Ubicación</th>
+                        <th>Horas Totales</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(registro, index) in registrosConCiudad" :key="registro.id"
+                    <tr v-for="(registro, index) in registros" :key="registro.id"
                         :class="{ 'bg-gray-100': index % 2 === 0, 'bg-gray-200': index % 2 !== 0 }">
-                        <td class="py-2 text-center">{{ registro.fecha }}</td>
-                        <td class="py-2 text-center">{{ registro.hora_entrada }}</td>
-                        <td class="py-2 text-center">{{ registro.hora_salida }}</td>
-                        <td class="py-2 text-center">{{ registro.ciudad }}</td>
-                        <td class="py-2 text-center">{{ registro.ip }}</td>
+                        <td class=" p-1 text-center">{{ registro.ip }}</td>
+                        <td class=" p-1 text-center">{{ registro.fecha }}</td>
+                        <td class=" p-1 text-center">{{ registro.rango }}</td>
+                        <td class=" p-1 text-center">{{ registro.ubicacion }}</td>
+                        <td class=" p-1 text-center">{{ registro.total }}</td>
                     </tr>
                 </tbody>
             </table>

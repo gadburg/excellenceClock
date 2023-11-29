@@ -28,15 +28,30 @@ const logout = () => {
 
 const isActive = (...routes) => routes.includes(route().current());
 </script>
-
+<script>
+export default {
+    data() {
+        return {
+            appName: " ExcellenceClock ",
+            anio: this.obtenerAnio(),
+        };
+    },
+    methods: {
+        obtenerAnio() {
+            const now = new Date();
+            return now.getFullYear().toString();
+        },
+    },
+};
+</script>
 <template>
-    <div>
+    <div >
         <Head :title="title" />
 
         <Banner />
 
-        <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
+        <div class="min-h-screen bg-indigo-300">
+            <nav class="bg-indigo-100 border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -52,6 +67,11 @@ const isActive = (...routes) => routes.includes(route().current());
                                 {{ $page.props.auth.user.empresa.nombre }}
                             </div>
                             <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                    Dashboard
+                                </NavLink>
+                            </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('registros.index')" :active="route().current('registros.*')">
                                     Registro Horario
@@ -218,14 +238,18 @@ const isActive = (...routes) => routes.includes(route().current());
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
                     class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                            Dashboard
+                        </ResponsiveNavLink>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('registros.index')" :active="route().current('registros.*')">
                             Registro Horario
                         </ResponsiveNavLink>
                     </div>
 
                     <div v-if="$page.props.user.permissions.includes('create empresa')" class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('empresas.index')"
-                        :active="route().current('empresas.*')">
+                        <ResponsiveNavLink :href="route('empresas.index')" :active="route().current('empresas.*')">
                             Empresas
                         </ResponsiveNavLink>
                     </div>
@@ -233,6 +257,11 @@ const isActive = (...routes) => routes.includes(route().current());
                     <div v-if="$page.props.user.permissions.includes('create user')" class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('register')" :active="route().current('crearUsuario')">
                             Usuarios
+                        </ResponsiveNavLink>
+                    </div>
+                    <div v-if="$page.props.user.permissions.includes('create user')" class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('register')" :active="route().current('crearUsuario')">
+                            Informes
                         </ResponsiveNavLink>
                     </div>
                     <!-- Responsive Settings Options -->
@@ -322,7 +351,7 @@ const isActive = (...routes) => routes.includes(route().current());
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto py-2 px-4 sm:px-3 lg:px-2">
                     <slot name="header" />
                 </div>
             </header>
@@ -331,6 +360,19 @@ const isActive = (...routes) => routes.includes(route().current());
             <main>
                 <slot />
             </main>
+
+            <footer class="bg-indigo-100 border-b border-gray-100 py-1 mt-8">
+                <div class="container mx-auto">
+                    <div class="text-center">
+                        <span>&copy;</span>
+                        <span>{{ appName }}</span>
+                        <span class="fecha">{{ anio }}</span>
+                    </div>
+                </div>
+
+            </footer>
         </div>
+        
     </div>
+    
 </template>

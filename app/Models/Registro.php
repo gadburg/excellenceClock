@@ -9,12 +9,14 @@ class Registro extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_registro';
     protected $fillable = [
-        'id_usuario', 'fecha', 'hora_entrada', 'hora_salida', 'longitud', 'latitud', 'ip'
+        'user_id', 'fecha', 'rango', 'ubicacion', 'ip', 'total'
     ];
 
+    
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'id_usuario');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

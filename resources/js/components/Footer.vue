@@ -1,6 +1,6 @@
 <template>
-    <footer class="app-footer bg-light py-3">
-        <div class="container">
+    <footer class="bg-gray-100 py-4 mt-4">
+        <div class="container mx-auto">
             <div class="text-center">
                 <span>&copy;</span>
                 <span>{{ appName }}</span>

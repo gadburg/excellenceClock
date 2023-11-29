@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('registros', function (Blueprint $table) {
             $table->id('id_registro');
-            $table->unsignedBigInteger('id_usuario');
-            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios');
+            $table->foreignId('user_id')->constrained('users');
             $table->date('fecha');
-            $table->time('hora_salida');
-            $table->time('hora_entrada');
-            $table->decimal('longitud', 10, 6);
-            $table->decimal('latitud', 10, 6);
+            $table->string('rango', 100);
+            $table->string('ubicacion', 100);
             $table->string('ip', 100);
+            $table->time('total');
             $table->timestamps();
         });
     }
