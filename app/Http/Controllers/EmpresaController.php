@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class EmpresaController extends Controller
 {
@@ -57,9 +58,11 @@ class EmpresaController extends Controller
     {
         try{
             $empresa->delete();
+            return Inertia::location(route('empresas.index'));
             //return redirect()->route('empresas.index');
         }catch (\Exception $e) {
             Log::error('Error borrar el registro: ' . $e->getMessage());
+            return Inertia::location(route('empresas.index'));
         }
     }
 

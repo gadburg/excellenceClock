@@ -28,23 +28,26 @@ const { registros } = defineProps(['registros']);
 
 const tiempo = ref('00:00:00');
 
-const registroUsado = ref(null);
+const registroUsadoId = ref(null);
+const registroUsadoTiempo = ref(null);
 
 var intervalId;
 // Obtener el registro con la fecha de hoy
 const obtenerRegistroHoy = () => {
     const fechaHoy = new Date().toISOString().split('T')[0];
-    const detener = document.getElementById('detener');
-    const iniciar = document.getElementById('iniciar');
-    // Buscar en los registros el que tenga la fecha de hoy
+    const tiempoDefecto = '00:00:00';
+    //const detener = document.getElementById('detener');
+    //const iniciar = document.getElementById('iniciar');
+    //buscamos en los registros el que tenga la fecha de hoy
     const registroHoy = registros.find(registro => registro.fecha === fechaHoy);
+    const registroTotal = registros.find(registro => registro.total === tiempoDefecto);
     // Si se encuentra el registro, puedes acceder a su id con registroHoy.id
     if (registroHoy) {
-        registroUsado.value = registroHoy.id_registro;
-        // Dividir el campo rango por "-" si existe
+        registroUsadoId.value = registroHoy.id_registro;
+        //dividimos el campo rango con "-" si existe
         const partesRango = registroHoy.rango.split('-');
         if (partesRango.length > 1) {
-            // Calcular la diferencia de tiempo entre los dos registros
+            //calculamos la diferencia de tiempo entre los dos registros
             const tiempoAnterior = partesRango[0];
             const tiempoActual = partesRango[1];
 
@@ -60,7 +63,7 @@ const obtenerRegistroHoy = () => {
             tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
             
         } else {
-            // No hay guion "-", comparar con la hora actual y mostrar la diferencia desde ese punto
+            //si no hay guion "-", comparamos con la hora actual y mostramos la diferencia desde ese punto
             const tiempoAnterior = partesRango[0];
             const tiempoActual = new Date().toISOString().split('T')[1].split('.')[0];;
             //const diferencia = tiempoActual - tiempoAnterior;
@@ -73,7 +76,7 @@ const obtenerRegistroHoy = () => {
             const minutos = Math.floor((diferenciaEnSegundos % 3600) / 60);
             const segundos = diferenciaEnSegundos % 60;
             
-            detener.disabled = false;
+            //detener.disabled = false;
 
             tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
         }
@@ -111,12 +114,16 @@ onMounted(() => {
             <div class="flex space-x-8">
                 <button id="iniciar"
                     class="bg-green-500 hover:bg-green-400 text-white font-bold border-b-4 border-green-700 hover:border-green-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
+                    :class="{ 'disabled:cursor-not-allowed': registroUsadoId !== null }"
+                    :disabled="registroUsadoId !== null"
                     @click="inicio">
                     Iniciar
                 </button>
                 <button id="detener"
                     class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold border-b-4 border-yellow-700 hover:border-yellow-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
-                    @click="() => detener(registroUsado)" disabled>
+                    :class="{ 'disabled:cursor-not-allowed': !registroUsadoId }"
+                    :disabled="registroUsadoId === null || registroUsadoTiempo === null"
+                    @click="() => detener(registroUsadoId)" >
                     Detener
                 </button>
             </div>
@@ -131,10 +138,10 @@ onMounted(() => {
                 <p class="text-lg font-bold py-1 pl-5 pr-5">Registros</p>
             </div>
         </div>
-        <div class="max-w-2xl mx-auto mt-3 bg-white shadow-xl">
-            <table class="min-w-full  shadow-xl">
-                <thead class="bg-gray-600 text-white ">
-                    <tr class="rounded">
+        <div class="max-w-2xl mx-auto mt-3 bg-white shadow-xl rounded-xl">
+            <table class="min-w-full shadow-xl rounded-xl">
+                <thead class="bg-gray-600 text-white rounded-xl">
+                    <tr class=" rounded-xl">
                         <th>IP</th>
                         <th>Fecha</th>
                         <th>Horas</th>
@@ -142,7 +149,7 @@ onMounted(() => {
                         <th>Horas Totales</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody  class="rounded-xl">
                     <tr v-for="(registro, index) in registros" :key="registro.id"
                         :class="{ 'bg-gray-100': index % 2 === 0, 'bg-gray-200': index % 2 !== 0 }">
                         <td class=" p-1 text-center">{{ registro.ip }}</td>

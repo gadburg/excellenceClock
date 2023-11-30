@@ -6,12 +6,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import 'tabulator-tables/dist/css/tabulator_bootstrap5.min.css';
+import {TabulatorFull as Tabulator} from 'tabulator-tables';
 const registros = ref([]);
 
 
 
 var fechaActual = new Date();
-console.log(fechaActual);
 var mes = fechaActual.getMonth() + 1;
 var anio = fechaActual.getFullYear();
 var data = {};
@@ -43,22 +44,33 @@ function obtenerRangoMes() {
     const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     const ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
 
-    // Formatear las fechas como cadenas 'YYYY-MM-DD'
-    const primerDiaMesFormateado = primerDiaMes.toISOString().split('T')[0];
-    const ultimoDiaMesFormateado = ultimoDiaMes.toISOString().split('T')[0];
+    const primerDiaMesFormateado = obtenerFormatoFecha(primerDiaMes);
+    const ultimoDiaMesFormateado = obtenerFormatoFecha(ultimoDiaMes);
 
     return `${primerDiaMesFormateado} | ${ultimoDiaMesFormateado}`;
 }
 
+//funcion para obtener el formato correcto de una fecha
+const obtenerFormatoFecha = (fecha) => {
+        const año = fecha.getFullYear();
+        const mes = fecha.getMonth() + 1; 
+        const dia = fecha.getDate();
+
+       
+        const formatoMes = mes < 10 ? `0${mes}` : mes;
+        const formatoDia = dia < 10 ? `0${dia}` : dia;
+
+        return `${año}-${formatoMes}-${formatoDia}`;
+    };
+
 //funcion para obtener el primer dia del año y el ultimo dia del año actua, los retorna separados por |
 function obtenerRangoAnio() {
     const hoy = new Date();
-    const primerDiaAnio = new Date(hoy.getFullYear(), 0, 1); // 0 representa enero
-    const ultimoDiaAnio = new Date(hoy.getFullYear() + 1, 0, 0); // 0 representa el último día de diciembre del año actual
+    const primerDiaAnio = new Date(hoy.getFullYear(), 0, 1);
+    const ultimoDiaAnio = new Date(hoy.getFullYear() + 1, 0, 0);
 
-    // Formatear las fechas como cadenas 'YYYY-MM-DD'
-    const primerDiaAnioFormateado = primerDiaAnio.toISOString().split('T')[0];
-    const ultimoDiaAnioFormateado = ultimoDiaAnio.toISOString().split('T')[0];
+    const primerDiaAnioFormateado = obtenerFormatoFecha(primerDiaAnio);
+    const ultimoDiaAnioFormateado = obtenerFormatoFecha(ultimoDiaAnio);
 
     return `${primerDiaAnioFormateado} | ${ultimoDiaAnioFormateado}`;
 }
@@ -91,7 +103,7 @@ const mostrarSemana = async () => {
 
     var semana = document.getElementById('horasSemana');
     semana.innerHTML = `
-            <div class="bg-white-500 text-black lg:w-1/3 p-2 text-gray-500 text-sm leading-relaxed flex items-center justify-center flex-wrap flex-col">
+            <div class="bg-white-500 text-black lg:w-1/3 p-2 text-sm leading-relaxed flex items-center justify-center flex-wrap flex-col">
                 <p class="text-lg font-bold">Semana</p>
                 <p class="text-3xl bg-black text-white rounded-xl">${tiempo}</p>
             </div>
@@ -101,12 +113,12 @@ const mostrarSemana = async () => {
 //funcion para mostrar el tiempo acumulado del mes actual
 const mostrarMes = async () => {
     var rangoMes = obtenerRangoMes();
-
+    
     var tiempo = await cargarRangoTotal(rangoMes);
-
+    
     var mes = document.getElementById('horasMes');
     mes.innerHTML = `
-        <div class="bg-white-500 text-black lg:w-1/3 p-2 text-gray-500 text-sm leading-relaxed flex items-center justify-center flex-wrap flex-col">
+        <div class="bg-white-500 text-black lg:w-1/3 p-2 text-sm leading-relaxed flex items-center justify-center flex-wrap flex-col">
             <p class="text-lg font-bold">Mes</p>
             <p class="text-3xl bg-black text-white rounded-xl">${tiempo}</p>
         </div>
@@ -115,8 +127,8 @@ const mostrarMes = async () => {
 
 //funcion para mostrar el tiempo acumulado del mes actual
 const mostrarAnio = async () => {
-    var rangoAnio = obtenerRangoMes();
-
+    var rangoAnio = obtenerRangoAnio();
+    
     var tiempo = await cargarRangoTotal(rangoAnio);
 
     var anio = document.getElementById('horasAnio');
@@ -128,7 +140,7 @@ const mostrarAnio = async () => {
     `;
 }
 
-//funcion para mostrar la suma de tiempos de la semana
+//funcion para mostrar la suma de tiempos de un rango
 const cargarRangoTotal = async (rango) => {
     try {
 
@@ -179,11 +191,10 @@ const renderizarTabla = (dato, div, columns) => {
 
     new Tabulator(div, {
         data: dato,
-        height: "100%",
         layout: "fitData",
         pagination: "local",
         movableColumns: false,
-        paginationSize: 10,
+        paginationSize: 1,
         columns: columns,
         locale: true,
         langs: {
@@ -208,7 +219,7 @@ const renderizarTabla = (dato, div, columns) => {
                     }
                 }
             }
-        }
+        },
     });
 };
 
@@ -241,11 +252,11 @@ onMounted(() => {
             </div>
         </div>
 
-        <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 p-5 lg:p-5 rounded--xl">
+        <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 p-5 lg:p-5 rounded--xl ">
             <div class="shadow-lg rounded">
                 <div class="flex items-center justify-center ">
                     <h2 class="ms-2 text-xl font-semibold text-gray-900 ">
-                        Tus registros del ultimo mes
+                        Tus registros del último mes
                     </h2>
                 </div>
                 <div class="flex items-center">
@@ -281,28 +292,18 @@ onMounted(() => {
 #mensual {
     background-color: #ccc;
     border: 1px solid #333;
-    border-radius: 10px;
+    border-radius: 5px;
+    
 }
 
 /*Theme the header*/
-#mensual .tabulator-header {
-    background-color: #333;
+.tabulator-header {
     color: #000000;
 }
 
 /*Allow column header names to wrap lines*/
-#mensual .tabulator-header .tabulator-col,
-#mensual .tabulator-header .tabulator-col-row-handle {
+.tabulator-header .tabulator-col,
+.tabulator-header .tabulator-col-row-handle {
     white-space: normal;
 }
-
-/*Color the table rows*/
-#mensual .tabulator-tableHolder .tabulator-table .tabulator-row {
-    color: #fff;
-    background-color: #666;
-}
-
-/*Color even rows*/
-#mensual .tabulator-tableHolder .tabulator-table .tabulator-row:nth-child(even) {
-    background-color: #444;
-}</style>
+</style>

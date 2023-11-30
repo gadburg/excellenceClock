@@ -12,18 +12,18 @@ defineProps({
 <template>
     <Head title="Excellence Clock" />
 
-    <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-center dark:bg-teal-900 selection:bg-red-500 selection:text-white">
+    <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-center dark:bg-indigo-300 selection:bg-indigo-500 selection:text-white">
         <div v-if="canLogin" class="sm:fixed sm:top-0 sm:end-0 p-6 text-end z-10">
-            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Inicio</Link>
+            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="font-semibold text-indigo-800 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Inicio</Link>
 
             <template v-else>
-                <Link :href="route('login')" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Iniciar sesión</Link>
+                <Link :href="route('login')" class="font-semibold text-indigo-600 hover:text-gray-900 dark:text-indigo-800 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Iniciar sesión</Link>
 
                 <Link v-if="canRegister" :href="route('register')" class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Registro</Link>
             </template>
         </div>
         <div class="flex justify-center items-center mt-6">
-            <img src="../../assets/logo.jpg" alt="Logo" class="mx-auto rounded-full border border-gray-300 p-2" />
+            <img src="../../assets/logo.jpg" alt="Logo" class="mx-auto rounded-full border border-indigo-800 p-2" />
         </div>
     </div>
    

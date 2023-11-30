@@ -12,11 +12,11 @@ class RegistroController extends Controller
 
     public function index(Request $request)
     {  
-        //Obtenemos el id del usuario
+        //obtenemos el id del usuario
         $userId = $request->user()->id;
 
-        //filtramos los registros por el usuario y ordenamos los recientes primero
-        $registros = Registro::where('user_id', $userId)->orderBy('fecha', 'desc')->get();
+        //filtramos los registros por el usuario y ordenamos los recientes primero, solo mostramos 7
+        $registros = Registro::where('user_id', $userId)->orderBy('fecha', 'desc')->take(7)->get();
 
         return inertia('Registro/Index', [
             'registros' => $registros,
@@ -42,17 +42,17 @@ class RegistroController extends Controller
         ]);
 
         try {
-            // Busca un registro existente para el mismo usuario y fecha
+            //busca un registro existente para el mismo usuario y fecha
             $existingRecord = Registro::where('user_id', $userId)
                 ->where('fecha', $request->fecha)
                 ->first();
 
             if ($existingRecord) {
-                // Si ya existe un registro para este usuario y fecha, no hacemos nada
+                //si ya existe un registro para este usuario y fecha, no hacemos nada
                 return redirect()->route('registros.index');
             }
 
-            // Si no existe, crea un nuevo registro
+            //si no existe, crea un nuevo registro
             Registro::create([
                 'user_id' => $userId,
                 'fecha' => $request->fecha,
@@ -65,7 +65,7 @@ class RegistroController extends Controller
             return redirect()->route('registros.index');
         } catch (\Exception $e) {
             Log::error('Error al almacenar el registro: ' . $e->getMessage());
-            return response()->json(['message' => 'Error al almacenar el registro'], 500);
+            return redirect()->route('registros.index')->with('error', 'Hubo un error al actualizar el registro.');
         }
     }
 
@@ -74,7 +74,7 @@ class RegistroController extends Controller
         return inertia('Registro/Edit', ['registro'=> $registro]);
     }
 
-    public function update(Request $request, Registro $registro){
+    /*public function update(Request $request, Registro $registro){
         $request->validate([
             'rango' => 'required',
             'total' => 'required',
@@ -86,6 +86,30 @@ class RegistroController extends Controller
         ]);
     
         return redirect()->route('registros.index');
+    }*/
+    public function update(Request $request, Registro $registro)
+    {
+        try {
+            $request->validate([
+                'rango' => 'required',
+                'total' => 'required',
+            ]);
+
+            //verifica si el valor total no es '00:00:00' antes de actualizar
+            if ($registro->total == '00:00:00') {
+                //actualiza solo si el nuevo valor total no es '00:00:00'
+                if ($request->total != '00:00:00') {
+                    $registro->update([
+                        'rango' => $request->rango,
+                        'total' => $request->total,
+                    ]);
+                }
+            }
+            return redirect()->route('registros.index');
+        } catch (\Exception $e) {
+            Log::error('Error al almacenar el registro: ' . $e->getMessage());
+            return redirect()->route('registros.index')->with('error', 'Hubo un error al actualizar el registro.');
+        }
     }
 
     public function mostrarMes(Request $request, $mes, $anio){

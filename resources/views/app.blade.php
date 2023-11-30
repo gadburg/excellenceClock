@@ -5,8 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content=`{{ csrf_token() }}`>
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
-        <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.1.0/dist/css/tabulator.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.1.0/dist/js/tabulator.min.js"></script>
+        
         <script src="https://kit.fontawesome.com/d230ba2068.js" crossorigin="anonymous"></script>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

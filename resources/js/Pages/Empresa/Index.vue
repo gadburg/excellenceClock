@@ -31,6 +31,7 @@ const deleteEmpresa = id => {
     }).then((result) => {
         if (result.isConfirmed) {
             Inertia.delete(route('empresas.destroy', id));
+            
         }
     })
 }
