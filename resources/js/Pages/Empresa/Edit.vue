@@ -34,7 +34,7 @@ const submitForm = () => {
     <AppLayout title="Editar empresa">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Empresa
+                Editar Empresa 
             </h2>
         </template>
         <div class="max-w-2xl mx-auto mt-10 bg-white p-5 rounded-xl shadow-xl animate__animated animate__bounceInLeft animate__delay-1s">

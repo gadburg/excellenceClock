@@ -12,7 +12,7 @@ class EmpresaController extends Controller
     public function index()
     {
         $empresas = Empresa::all();
-        return inertia('Empresa/Index', ['empresas' => $empresas]);
+        return Inertia('Empresa/Index', ['empresas' => $empresas]);
     }
 
     public function create()
@@ -56,25 +56,16 @@ class EmpresaController extends Controller
 
     public function destroy(Empresa $empresa)
     {
-        try{
-            $empresa->delete();
-            return Inertia::location(route('empresas.index'));
-            //return redirect()->route('empresas.index');
-        }catch (\Exception $e) {
-            Log::error('Error borrar el registro: ' . $e->getMessage());
-            return Inertia::location(route('empresas.index'));
-        }
-    }
-
-    public function borrar(Request $request, Empresa $empresa)
-    {
-        try{
+       
             $empresa->delete();
             return redirect()->route('empresas.index');
-        }catch (\Exception $e) {
-            Log::error('Error borrar el registro: ' . $e->getMessage());
-        }
+
     }
 
+    public function borrar(Empresa $empresa)
+    {
+        $empresa -> delete();
+        return inertia('Empresa/Index', ['empresas'=> $empresas]);
+    }
    
 }

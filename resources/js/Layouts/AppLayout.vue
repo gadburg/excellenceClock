@@ -90,6 +90,12 @@ export default {
                                     Usuarios
                                 </NavLink>
                             </div>
+                            <div v-if="$page.props.user.permissions.includes('create user')"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('informes')" :active="route().current('informes')">
+                                    Informes
+                                </NavLink>
+                            </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">

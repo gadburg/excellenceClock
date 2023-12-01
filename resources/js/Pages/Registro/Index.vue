@@ -64,6 +64,7 @@ const obtenerRegistroHoy = () => {
             
         } else {
             //si no hay guion "-", comparamos con la hora actual y mostramos la diferencia desde ese punto
+            registroUsadoTiempo.value = registroTotal;
             const tiempoAnterior = partesRango[0];
             const tiempoActual = new Date().toISOString().split('T')[1].split('.')[0];;
             //const diferencia = tiempoActual - tiempoAnterior;
@@ -81,6 +82,7 @@ const obtenerRegistroHoy = () => {
             tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
         }
     }
+    
 }
 
 function obtenerSegundosDesdeMedianoche(hora) {
@@ -94,7 +96,6 @@ const formatearNumero = (numero) => {
 
 onMounted(() => {
     obtenerRegistroHoy();
-
     intervalId = setInterval(() => {
         obtenerRegistroHoy();
     }, 1000);

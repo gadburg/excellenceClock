@@ -139,4 +139,14 @@ class RegistroController extends Controller
         return response()->json($registros);
     }
 
+    public function obtenerRegistrosRango(Request $request, $userId, $fechaInicio, $fechaFin)
+    {
+        $registros = Registro::with('usuario') // Cargar la relación con el usuario
+        ->where('user_id', $userId)
+        ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+        ->orderBy('fecha', 'asc')
+        ->get();
+    
+    return response()->json($registros);
+    }
 }
