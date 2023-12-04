@@ -9,7 +9,7 @@ class Turno extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_turno';
+    protected $primaryKey = 'id';
     protected $fillable = ['nombre', 'hora_inicio', 'hora_fin'];
 
     public function calendarios()

@@ -9,7 +9,7 @@ class Notificaciones extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_notificacion';
+    protected $primaryKey = 'id';
     protected $fillable = ['mensaje', 'id_usuario', 'tipo', 'creador'];
 
     public function usuario()

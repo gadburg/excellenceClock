@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-
+//formulario vacio
 const form = useForm({
   ip: '',
   fecha: '',
@@ -9,6 +9,8 @@ const form = useForm({
   ubicacion: '',
   total: '',
 });
+
+//funcion asincrona para obtener los datos de entrada del dia
 const startTimer = async () => {
   try {
     const ipResponse = await fetch('https://api64.ipify.org?format=json');
@@ -29,35 +31,54 @@ const startTimer = async () => {
     console.error('Error al iniciar el temporizador:', error.message);
   }
 };
+
 startTimer();
+
+//acciones al enviar formulario
 const submitForm = () => {
     form.post(route('registros.store'), {
         onFinish: () => form.reset('rango', 'total'),
     });
 };
 
+//funcion para obtener la ubicacion, si no se puede obtener asigna unas coordenadas por defecto
 const getCurrentPosition = () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       (position) => resolve(position),
-      (error) => reject(error)
+      (error) => {
+        resolve({
+          coords: {
+            latitude: 0.0,
+            longitude: 0.0
+          },
+          timestamp: Date.now()
+        });
+      }
     );
   });
 };
 
+//funcion para obtener el dia actual de madrid
 const getCurrentDate = () => {
   const currentDate = new Date();
-  return currentDate.toISOString().split('T')[0];
+  const opciones = { timeZone: 'Europe/Madrid' };
+  const fechaMadrid = currentDate.toLocaleDateString('es-ES', opciones);
+  return fechaMadrid.split('/').reverse().join('-');
 };
 
+//funcion para obtener la hora actual de madrid
 const getCurrentTime = () => {
   const currentDate = new Date();
-  return currentDate.toISOString().split('T')[1].split('.')[0];
+  const opciones = { timeZone: 'Europe/Madrid', hour12: false };
+  const horaMadrid = currentDate.toLocaleTimeString('es-ES', opciones);
+  return horaMadrid.split(' ')[0];
 };
 
+//funcion asicrona que recibe los parametros de latitud y longuitud para retornar el nombre de las coordenadas, retorna la ciudad y la comunidad
 const getCityAndRegion = async (latitude, longitude) => {
   try {
-    // Utiliza una API de geolocalización inversa para obtener la ciudad y la comunidad según las coordenadas
+    //utiliza una API de geolocalizacion inversa para obtener la ciudad y la comunidad segun las coordenadas
     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
     const data = await response.json();
     return `${data.address.city}, ${data.address.state}`;

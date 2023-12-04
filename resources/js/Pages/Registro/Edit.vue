@@ -15,12 +15,12 @@ const props = defineProps({
         required: true
     }
 })
-
+//cargamos el formulario
 const form = useForm({
     rango: props.registro.rango,
     total: props.registro.total,
 });
-
+//acciones cuando se envia el formulario
 const submitForm = () => {
     form.put(route('registros.update', props.registro ), {
         onSuccess: () => {
@@ -28,12 +28,12 @@ const submitForm = () => {
         },
     });
 }
-
+//funcion asincrona para actualizar el registro del dia con los datos de salida
 const startTimer = async () => {
     try {
 
         const tiempoAnterior = form.rango;
-        const tiempoActual = new Date().toISOString().split('T')[1].split('.')[0];;
+        const tiempoActual = getCurrentTime();
         //const diferencia = tiempoActual - tiempoAnterior;
         form.rango=form.rango+" - "+tiempoActual;
         const segundos1 = obtenerSegundosDesdeMedianoche(tiempoAnterior);
@@ -54,15 +54,26 @@ const startTimer = async () => {
     }
 };
 
+//funcion para obtener el tiempo actual de madrid
+const getCurrentTime = () => {
+  const currentDate = new Date();
+  const opciones = { timeZone: 'Europe/Madrid', hour12: false };
+  const horaMadrid = currentDate.toLocaleTimeString('es-ES', opciones);
+  return horaMadrid.split(' ')[0];
+};
+
+//funcion para obtener los segundos que han pasado del dia
 function obtenerSegundosDesdeMedianoche(hora) {
     const [hh, mm, ss] = hora.split(':');
     return parseInt(hh, 10) * 3600 + parseInt(mm, 10) * 60 + parseInt(ss, 10);
 }
 
+//funcion para dar el formato correcto
 const formatearNumero = (numero) => {
     return numero < 10 ? `0${numero}` : numero;
 };
 
+//al montar
 onMounted(() => {
     startTimer();
 });

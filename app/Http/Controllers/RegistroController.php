@@ -10,29 +10,46 @@ use Illuminate\Support\Facades\Log;
 class RegistroController extends Controller
 {
 
+    /**
+     * Muestra y retorna la lista de registros recientes de un usuario, solo muestra los ultimos 7 registros, retorna los datos y la vista
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request)
     {  
         //obtenemos el id del usuario
         $userId = $request->user()->id;
 
         //filtramos los registros por el usuario y ordenamos los recientes primero, solo mostramos 7
-        $registros = Registro::where('user_id', $userId)->orderBy('fecha', 'desc')->take(7)->get();
+        $registros = Registro::where('id_usuario', $userId)->orderBy('fecha', 'desc')->take(7)->get();
 
-        return inertia('Registro/Index', [
-            'registros' => $registros,
-        ]);
+        return inertia('Registro/Index', ['registros' => $registros,]);
     }
 
+    /**
+     * Retorna la ruta para la creacion del registro
+     *
+     * @return \Inertia\Response
+     */
     public function create()
     {
         //mostramos la creacion
         return inertia('Registro/Create');
     }
 
+    /**
+     * Inserta un registro en la db
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
+        //obtenemos el usuario activo
         $userId = $request->user()->id;
 
+        //validamos los datos
         $request->validate([
             'fecha' => 'required',
             'rango' => 'required',
@@ -43,25 +60,25 @@ class RegistroController extends Controller
 
         try {
             //busca un registro existente para el mismo usuario y fecha
-            $existingRecord = Registro::where('user_id', $userId)
+            $existingRecord = Registro::where('id_usuario', $userId)
                 ->where('fecha', $request->fecha)
                 ->first();
 
+            //si ya existe un registro para este usuario y fecha, no hacemos nada y retornamos al listado
             if ($existingRecord) {
-                //si ya existe un registro para este usuario y fecha, no hacemos nada
                 return redirect()->route('registros.index');
             }
 
             //si no existe, crea un nuevo registro
             Registro::create([
-                'user_id' => $userId,
+                'id_usuario' => $userId,
                 'fecha' => $request->fecha,
                 'rango' => $request->rango,
                 'ubicacion' => $request->ubicacion,
                 'ip' => $request->ip,
                 'total' => $request->total,
             ]);
-
+            //retorna al listado
             return redirect()->route('registros.index');
         } catch (\Exception $e) {
             Log::error('Error al almacenar el registro: ' . $e->getMessage());
@@ -69,27 +86,29 @@ class RegistroController extends Controller
         }
     }
 
+    /**
+     * Retorna la vista para la edicion de un registro
+     *
+     * @param  \App\Models\Registro  $registro
+     * @return \Inertia\Response
+     */
     public function edit(Registro $registro)
     {
         return inertia('Registro/Edit', ['registro'=> $registro]);
     }
 
-    /*public function update(Request $request, Registro $registro){
-        $request->validate([
-            'rango' => 'required',
-            'total' => 'required',
-        ]);
-    
-        $registro->update([
-            'rango' => $request->rango,
-            'total' => $request->total,
-        ]);
-    
-        return redirect()->route('registros.index');
-    }*/
+
+     /**
+     * Actualizamos un registro en la db
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Registro  $registro
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Registro $registro)
     {
         try {
+            //validamos los datos
             $request->validate([
                 'rango' => 'required',
                 'total' => 'required',
@@ -105,6 +124,7 @@ class RegistroController extends Controller
                     ]);
                 }
             }
+            //retornamos a la vista del listado
             return redirect()->route('registros.index');
         } catch (\Exception $e) {
             Log::error('Error al almacenar el registro: ' . $e->getMessage());
@@ -112,41 +132,70 @@ class RegistroController extends Controller
         }
     }
 
+    /**
+     * Obtiene y retorna los datos de un mes del año del usuario activo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $mes
+     * @param  int  $anio
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function mostrarMes(Request $request, $mes, $anio){
-
+        //obtenemos el usuario activo
         $userId = $request->user()->id;
-
-        $registros = Registro::where('user_id', $userId)
+        //obtenemos los datos
+        $registros = Registro::where('id_usuario', $userId)
             ->whereMonth('fecha', $mes)  
             ->whereYear('fecha', $anio)           
             ->orderBy('fecha', 'asc')
             ->select('fecha', 'rango', 'ubicacion', 'ip','total')
             ->get();
-
+        //retornamos los datos
         return response()->json($registros);
     }
 
+    /**
+     * Obtiene y retorna los datos en un rango de fechas especifico del usuario activo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $fechaInicio
+     * @param  string  $fechaFin
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function horasRango(Request $request, $fechaInicio, $fechaFin) {
+        //obtenemos el usuario activo
         $userId = $request->user()->id;
     
-        // Obtener registros para el usuario y el rango de fechas
-        $registros = Registro::where('user_id', $userId)
+        //obtenemos los registros para el rango recibido
+        $registros = Registro::where('id_usuario', $userId)
             ->whereBetween('fecha', [$fechaInicio, $fechaFin])
             ->orderBy('fecha', 'asc')
             ->select('total')
             ->get();
-    
+        //retornamos los datos
         return response()->json($registros);
     }
 
+    
+    /**
+     * Obtiene y retorna los datos en un rango de fechas especifico de un usuario especifico
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $userId
+     * @param  string  $fechaInicio
+     * @param  string  $fechaFin
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function obtenerRegistrosRango(Request $request, $userId, $fechaInicio, $fechaFin)
     {
-        $registros = Registro::with('usuario') // Cargar la relación con el usuario
-        ->where('user_id', $userId)
+        //obtenemos los datos del usuario recibido en el rango de fechas recibido
+        $registros = Registro::with('usuario') 
+        ->where('id_usuario', $userId)
         ->whereBetween('fecha', [$fechaInicio, $fechaFin])
         ->orderBy('fecha', 'asc')
         ->get();
-    
-    return response()->json($registros);
+        //retornamos los datos
+        return response()->json($registros);
     }
+    
 }

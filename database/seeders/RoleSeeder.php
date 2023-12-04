@@ -105,6 +105,11 @@ class RoleSeeder extends Seeder
         
             // Grupo de permisos responsable
             $permissions_responsable = [
+                $permission_create_user,
+                $permission_read_user,
+                $permission_update_user,
+                $permission_delete_user,
+                
                 $permission_create_turno,
                 $permission_read_turno,
                 $permission_update_turno,
@@ -129,11 +134,6 @@ class RoleSeeder extends Seeder
                 $permission_read_fecha,
                 $permission_update_fecha,
                 $permission_delete_fecha,
-                
-                $permission_create_empresa,
-                $permission_read_empresa,
-                $permission_update_empresa,
-                $permission_delete_empresa,
             ];
 
         //sincronizacion de grupo de permisos con el rol

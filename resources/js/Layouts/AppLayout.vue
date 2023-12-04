@@ -86,7 +86,7 @@ export default {
                             </div>
                             <div v-if="$page.props.user.permissions.includes('create user')"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('register')" :active="route().current('register')">
+                                <NavLink :href="route('users.index')" :active="route().current('users.*')">
                                     Usuarios
                                 </NavLink>
                             </div>
@@ -261,17 +261,17 @@ export default {
                     </div>
 
                     <div v-if="$page.props.user.permissions.includes('create user')" class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('register')" :active="route().current('crearUsuario')">
+                        <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.*')">
                             Usuarios
                         </ResponsiveNavLink>
                     </div>
                     <div v-if="$page.props.user.permissions.includes('create user')" class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('register')" :active="route().current('crearUsuario')">
+                        <ResponsiveNavLink :href="route('informes')" :active="route().current('informes')">
                             Informes
                         </ResponsiveNavLink>
                     </div>
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="pt-4 pb-1 border-t border-indigo-800">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="h-10 w-10 rounded-full object-cover"

@@ -43,7 +43,7 @@ const obtenerRegistroHoy = () => {
     const registroTotal = registros.find(registro => registro.total === tiempoDefecto);
     // Si se encuentra el registro, puedes acceder a su id con registroHoy.id
     if (registroHoy) {
-        registroUsadoId.value = registroHoy.id_registro;
+        registroUsadoId.value = registroHoy.id;
         //dividimos el campo rango con "-" si existe
         const partesRango = registroHoy.rango.split('-');
         if (partesRango.length > 1) {
@@ -66,7 +66,7 @@ const obtenerRegistroHoy = () => {
             //si no hay guion "-", comparamos con la hora actual y mostramos la diferencia desde ese punto
             registroUsadoTiempo.value = registroTotal;
             const tiempoAnterior = partesRango[0];
-            const tiempoActual = new Date().toISOString().split('T')[1].split('.')[0];;
+            const tiempoActual = obtenerTiempoActual();
             //const diferencia = tiempoActual - tiempoAnterior;
 
             const segundos1 = obtenerSegundosDesdeMedianoche(tiempoAnterior);
@@ -84,6 +84,12 @@ const obtenerRegistroHoy = () => {
     }
     
 }
+
+const obtenerTiempoActual = () => {
+  const opciones = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Madrid' };
+  const tiempoActual = new Date().toLocaleTimeString('es-ES', opciones);
+  return tiempoActual;
+};
 
 function obtenerSegundosDesdeMedianoche(hora) {
     const [hh, mm, ss] = hora.split(':');

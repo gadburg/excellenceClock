@@ -34,4 +34,5 @@ class CreateNewUser implements CreatesNewUsers
             'id_empresa' =>  $input['id_empresa'],
         ]);
     }
+
 }

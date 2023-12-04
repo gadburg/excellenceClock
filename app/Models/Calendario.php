@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Calendario extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'id_calendario';
+    protected $primaryKey = 'id';
     protected $fillable = ['id_turno', 'id_usuario'];
 
     public function turno()

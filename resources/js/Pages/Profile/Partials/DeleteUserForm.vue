@@ -38,7 +38,7 @@ const closeModal = () => {
 </script>
 
 <template>
-    <ActionSection>
+    <ActionSection class="bg-indigo-100 rounded-xl p-2">
         <template #title>
             Borrar Cuenta
         </template>

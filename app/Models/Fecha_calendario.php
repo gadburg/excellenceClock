@@ -9,6 +9,6 @@ class Fecha_calendario extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_fecha';
+    protected $primaryKey = 'id';
     protected $fillable = ['fecha'];
 }

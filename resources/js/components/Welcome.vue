@@ -151,11 +151,13 @@ const cargarRangoTotal = async (rango) => {
 
         const response = await fetch(`/horas-rango/${inicioSemana}/${finSemana}`);
         const data = await response.json();
+        if(data){
+            const tiempoTotal = sumarTiemposArray(data);
 
-        const tiempoTotal = sumarTiemposArray(data);
-
-        return tiempoTotal;
-
+            return tiempoTotal;
+        } else{
+            return '00:00:00';
+        }
     } catch (error) {
         console.error('Error al obtener los registros:', error);
         return '00:00:00';

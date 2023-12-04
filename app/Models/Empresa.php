@@ -9,11 +9,8 @@ class Empresa extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_empresas';
+    protected $primaryKey = 'id';
     protected $fillable = ['nombre', 'responsable'];
 
-    public function responsable()
-    {
-        return $this->belongsTo(Usuario::class, 'responsable');
-    }
+    
 }

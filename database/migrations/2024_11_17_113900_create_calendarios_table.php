@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('empresas', function (Blueprint $table) {
-            $table->id('id_empresas');
-            $table->string('nombre', 100);
-            $table->string('responsable', 100);
+        Schema::create('calendarios', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_turno')->references('id')->on('turnos')->onDelete('cascade');
+            $table->foreignId('id_usuario')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('empresas');
+        Schema::dropIfExists('calendarios');
     }
 };

@@ -64,13 +64,13 @@ defineProps({
                 <tbody>
                     <!--<tr v-for="(empresa, index) in empresas" :key="empresa.id"
                         :class="{ 'bg-gray-100': index % 2 === 0, 'bg-gray-200': index % 2 !== 0 }">-->
-                    <tr v-for="empresa in empresas" :key="empresa.id_empresas">
-                        <td class="py-2  pl-4 text-center">{{ empresa.id_empresas }}</td>
+                    <tr v-for="empresa in empresas" :key="empresa.id">
+                        <td class="py-2  pl-4 text-center">{{ empresa.id }}</td>
                         <td class="py-2 text-center">{{ empresa.nombre }}</td>
                         <td class="py-2 text-center">{{ empresa.responsable }}</td>
                         <td class="py-2 text-center space-x-2">
                             <!--editar-->
-                            <Link :href="route('empresas.edit', empresa.id_empresas)"
+                            <Link :href="route('empresas.edit', empresa.id)"
                                 class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-1 px-2 border-b-4 border-blue-700 hover:border-blue-500 rounded">
                             Editar
                             </Link>
@@ -79,7 +79,7 @@ defineProps({
                                 class="bg-red-500 hover:bg-red-400 text-white font-bold py-1 px-2 border-b-4 border-red-700 hover:border-red-500 rounded">
                             Borrar
                             </Link>-->
-                            <button @click="confirmarBorrado(empresa.id_empresas)"
+                            <button @click="confirmarBorrado(empresa.id)"
                                 class="bg-red-500 hover:bg-red-400 text-white font-bold py-1 px-2 border-b-4 border-red-700 hover:border-red-500 rounded">
                                 Borrar
                             </button>
