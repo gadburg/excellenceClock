@@ -41,7 +41,7 @@ defineProps({
                 Usuarios
             </h2>
         </template>
-        <div class="pl-2 max-w-4xl mx-auto flex justify-between items-center mt-3 rounded-md bg-white">
+        <div class="pl-2 max-w-4xl mx-auto flex justify-between items-center mt-3 rounded-md bg-white animate__animated animate__rotateIn animate__rotateInUpRight animate__delay-1s">
             <p class="text-lg font-bold py-1">Listado de Usuarios</p>
             <Link :href="route('users.create')"
                 class="px-2 py-0 mr-2 bg-purple-500 hover:bg-purple-400 text-white font-bold border-b-4 border-purple-700 hover:border-purple-500 rounded">

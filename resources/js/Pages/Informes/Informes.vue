@@ -155,11 +155,11 @@ export default {
             var nombre = dato[0].usuario.name;
 
             //creamos los botones
-            crearBoton("Descargar CSV", "csv", "registro_" + nombre + ".csv", null, "bg-green-500 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
-            crearBoton("Descargar JSON", "json", "registro_" + nombre + ".json", null, "bg-green-500 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
-            crearBoton("Descargar XLSX", "xlsx", "registro_" + nombre + ".xlsx", { sheetName: "Registros: " + nombre }, "bg-green-500 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
-            crearBoton("Descargar PDF", "pdf", "registro_" + nombre + ".pdf", { orientation: "portrait", title: "Registros: " + nombre }, "bg-green-500 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
-            crearBoton("Descargar HTML", "html", "registro_" + nombre + ".html", { style: true }, "bg-green-500 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
+            crearBoton("Descargar CSV", "csv", "registro_" + nombre + ".csv", null, "bg-green-400 hover:bg-green-600 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-600 rounded");
+            crearBoton("Descargar JSON", "json", "registro_" + nombre + ".json", null, "bg-amber-300 hover:bg-amber-400 text-black font-bold py-1 px-2 border-b-4 border-amber-700 hover:border-amber-500 rounded");
+            crearBoton("Descargar XLSX", "xlsx", "registro_" + nombre + ".xlsx", { sheetName: "Registros: " + nombre }, "bg-green-300 hover:bg-green-400 text-black font-bold py-1 px-2 border-b-4 border-green-700 hover:border-green-500 rounded");
+            crearBoton("Descargar PDF", "pdf", "registro_" + nombre + ".pdf", { orientation: "portrait", title: "Registros: " + nombre }, "bg-red-300 hover:bg-red-400 text-black font-bold py-1 px-2 border-b-4 border-red-700 hover:border-red-500 rounded");
+            crearBoton("Descargar HTML", "html", "registro_" + nombre + ".html", { style: true }, "bg-cyan-300 hover:bg-cyan-400 text-black font-bold py-1 px-2 border-b-4 border-cyan-700 hover:border-cyan-500 rounded");
         }
 
     },
@@ -196,7 +196,8 @@ import { TabulatorFull as Tabulator } from 'tabulator-tables';
                     </option>
                 </select>
 
-                <div class="flex mb-3">
+                <div class="flex mb-3 items-center">
+                    <p class="mr-2">Rango de fechas:</p>
                     <input v-model="fechaInicial" type="date" :max="obtenerFechaHoy()"
                         class="flex-grow mr-2 rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <input v-model="fechaFinal" type="date" :disabled="!fechaInicial" :min="fechaInicial"

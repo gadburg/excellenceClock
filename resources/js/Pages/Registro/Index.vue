@@ -8,7 +8,7 @@ export default {
 
         },
         detener(id) {
-                     
+
             this.$inertia.visit(route('registros.edit', id));
         },
     },
@@ -61,7 +61,7 @@ const obtenerRegistroHoy = () => {
             const segundos = diferenciaEnSegundos % 60;
 
             tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
-            
+
         } else {
             //si no hay guion "-", comparamos con la hora actual y mostramos la diferencia desde ese punto
             registroUsadoTiempo.value = registroTotal;
@@ -76,19 +76,19 @@ const obtenerRegistroHoy = () => {
             const horas = Math.floor(diferenciaEnSegundos / 3600);
             const minutos = Math.floor((diferenciaEnSegundos % 3600) / 60);
             const segundos = diferenciaEnSegundos % 60;
-            
+
             //detener.disabled = false;
 
             tiempo.value = `${formatearNumero(horas)}:${formatearNumero(minutos)}:${formatearNumero(segundos)}`;
         }
     }
-    
+
 }
 
 const obtenerTiempoActual = () => {
-  const opciones = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Madrid' };
-  const tiempoActual = new Date().toLocaleTimeString('es-ES', opciones);
-  return tiempoActual;
+    const opciones = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Madrid' };
+    const tiempoActual = new Date().toLocaleTimeString('es-ES', opciones);
+    return tiempoActual;
 };
 
 function obtenerSegundosDesdeMedianoche(hora) {
@@ -122,21 +122,21 @@ onMounted(() => {
                 <button id="iniciar"
                     class="bg-green-500 hover:bg-green-400 text-white font-bold border-b-4 border-green-700 hover:border-green-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
                     :class="{ 'disabled:cursor-not-allowed': registroUsadoId !== null }"
-                    :disabled="registroUsadoId !== null"
-                    @click="inicio">
-                    Iniciar
+                    :disabled="registroUsadoId !== null" @click="inicio">
+                    <i class="fa-solid fa-clock"></i>   Iniciar
                 </button>
                 <button id="detener"
                     class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold border-b-4 border-yellow-700 hover:border-yellow-500 rounded-lg py-3 px-6 disabled:cursor-not-allowed"
                     :class="{ 'disabled:cursor-not-allowed': !registroUsadoId }"
                     :disabled="registroUsadoId === null || registroUsadoTiempo === null"
-                    @click="() => detener(registroUsadoId)" >
-                    Detener
+                    @click="() => detener(registroUsadoId)">
+                    Detener <i class="fa-solid fa-stopwatch"></i>
                 </button>
             </div>
 
             <!-- Contador de reloj en el centro y más arriba -->
-            <div class="mt-4 text-4xl font-bold bg-black rounded-xl text-white animate__animated animate__zoomIn animate__delay-1s p-1 shadow-lg" id="contadorReloj">
+            <div class="mt-4 text-4xl font-bold bg-black rounded-xl text-white animate__animated animate__zoomIn animate__delay-1s p-1 shadow-lg"
+                id="contadorReloj">
                 {{ tiempo }}
             </div>
         </div>
@@ -145,25 +145,25 @@ onMounted(() => {
                 <p class="text-lg font-bold py-1 pl-5 pr-5">Registros</p>
             </div>
         </div>
-        <div class="max-w-2xl mx-auto mt-3 bg-white shadow-xl rounded-xl">
-            <table class="min-w-full shadow-xl rounded-xl">
+        <div class="max-w-2xl mx-auto mt-3 bg-white shadow-xl rounded-xl overflow-x-auto">
+            <table class="min-w-full">
                 <thead class="bg-gray-600 text-white rounded-xl">
-                    <tr class=" rounded-xl">
-                        <th>IP</th>
-                        <th>Fecha</th>
-                        <th>Horas</th>
-                        <th>Ubicación</th>
-                        <th>Horas Totales</th>
+                    <tr>
+                        <th class="p-2 sm:p-3">IP</th>
+                        <th class="p-2 sm:p-3">Fecha</th>
+                        <th class="p-2 sm:p-3">Horas</th>
+                        <th class="p-2 sm:p-3">Ubicación</th>
+                        <th class="p-2 sm:p-3">Horas Totales</th>
                     </tr>
                 </thead>
-                <tbody  class="rounded-xl">
+                <tbody class="divide-y divide-gray-200">
                     <tr v-for="(registro, index) in registros" :key="registro.id"
                         :class="{ 'bg-gray-100': index % 2 === 0, 'bg-gray-200': index % 2 !== 0 }">
-                        <td class=" p-1 text-center">{{ registro.ip }}</td>
-                        <td class=" p-1 text-center">{{ registro.fecha }}</td>
-                        <td class=" p-1 text-center">{{ registro.rango }}</td>
-                        <td class=" p-1 text-center">{{ registro.ubicacion }}</td>
-                        <td class=" p-1 text-center">{{ registro.total }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ registro.ip }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ registro.fecha }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ registro.rango }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ registro.ubicacion }}</td>
+                        <td class="p-2 sm:p-3 text-center">{{ registro.total }}</td>
                     </tr>
                 </tbody>
             </table>
